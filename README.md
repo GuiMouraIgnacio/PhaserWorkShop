@@ -1,13 +1,15 @@
-Arquivos do Workshop de Phaser.io realizado pelo Nerdzão, na FCamara, dia 28/09;
+# Ballz - Workshop Phaser.io
 
-Parte 0: Setup inicial do projeto
+Arquivos do Workshop de **Phaser.io** realizado por mim em parceria com o Nerdzão, na **FCamara**, dia 28/09;
 
-Parte 1: Visualizando objetos na página
+# Arquivos
 
-Parte 2: Movimentação basica da bolinha e core-loop de gameplay
+- **Assets** - Guarda as imagens do jogo e uma cópia da biblioteca Phaser;
+- **Ballz.pptx** - PowerPoint usado na apresentação do workshop;
+- **index.html** - HTML simples que serve somente para servir nosso jogo na página;
+- **part0-4.js** - Código comentado das etapas de criação do jogo;
+- **game.js** - Versão final do código;
 
-Parte 3: Inserindo blocos
+## Para rodar
 
-Parte 4: Colocando "vidas" nos blocos
-
-Parte 5: Inserindo multiplas bolas
+Sirva esse repositório usando seu web server de preferência.
