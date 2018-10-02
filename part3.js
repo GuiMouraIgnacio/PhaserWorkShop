@@ -1,14 +1,11 @@
 var game;
 
-// global options
 var gameOptions = {
     scorePanelHeight: 0.08,
     launchPanelHeight: 0.18,
     ballSize: 0.04,
     ballSpeed: 1000,
-    // block spots per line
     blocksPerLine: 7,
-    // maximum amount of blocks per line
     maxBlocksPerLine: 4
 }
 
@@ -23,7 +20,6 @@ playGame.prototype = {
         game.load.image("ball", "assets/ball.png");
         game.load.image("panel", "assets/panel.png");
         game.load.image("trajectory", "assets/trajectory.png");
-        // adciona o block
         game.load.image("block", "assets/block.png");
     },
     create: function () {
@@ -37,7 +33,6 @@ playGame.prototype = {
         this.scorePanel = game.add.sprite(0, 0, "panel");
         this.scorePanel.width = game.width;
         this.scorePanel.height = Math.round(game.height * gameOptions.scorePanelHeight);
-        //habilita fisicas no scorePanel
         game.physics.enable(this.scorePanel, Phaser.Physics.ARCADE);
         this.scorePanel.body.immovable = true;
 
@@ -69,47 +64,37 @@ playGame.prototype = {
 
         this.shooting = false;
 
-        // add the group where all blocks will be placed
+        // cria um grupo de objetos pra guardar os blocos
         this.blockGroup = game.add.group();
-        // place a new line of boxes
+        // inicia o jogo com uma linha de blocos
         this.placeLine();
     },
 
     placeLine: function () {
-        // determine block size
+        // calcula o tamanho do bloco
         var blockSize = game.width / gameOptions.blocksPerLine;
 
-        // array of positions already picked up by a block
         var placedBlocks = [];
 
-        // repeat "maxBlocksPerLine" times
         for (var i = 0; i < gameOptions.maxBlocksPerLine; i++) {
-
-            // choose a random position
             var blockPosition = game.rnd.between(0, gameOptions.blocksPerLine - 1);
 
-            // if the random position is free...
+            // verifica se a posicao aleatoria esta disponivel
             if (placedBlocks.indexOf(blockPosition) == -1) {
 
-                // insert the position into the array of already picked positions
+                // ocupa a posicao
                 placedBlocks.push(blockPosition);
 
-                // add the block
+                // cria o bloco
                 var block = game.add.sprite(blockPosition * blockSize + blockSize / 2, blockSize / 2 + game.height * gameOptions.scorePanelHeight, "block");
                 block.width = blockSize;
                 block.height = blockSize;
                 block.anchor.set(0.5);
-
-                // enable ARCADE physics on block
                 game.physics.enable(block, Phaser.Physics.ARCADE);
-
-                // block will not move
                 block.body.immovable = true;
-
-                // custom property. Block starts at row 1
                 block.row = 1;
 
-                // add block to block group
+                // adciona ao grupo
                 this.blockGroup.add(block);
             }
         }
@@ -159,12 +144,10 @@ playGame.prototype = {
 
         if (this.shooting) {
 
-            // check for collision between the ball and the score panel. Just check and make it bounce
             game.physics.arcade.collide(this.ball, this.scorePanel);
 
-            // check for collision between the ball and blockGroup children
+            // colisao da bola com blocos
             game.physics.arcade.collide(this.ball, this.blockGroup, function (ball, block) {
-                // destroy the block
                 block.destroy();
             }, null, this);
 
@@ -172,18 +155,15 @@ playGame.prototype = {
             game.physics.arcade.collide(this.ball, this.launchPanel, function () {
                 this.ball.body.velocity.set(0);
 
-                // use a tween to scroll down blockGroup group
+                // animação para descer os blocos visualmente
                 var scrollTween = game.add.tween(this.blockGroup).to({
                     y: this.blockGroup.y + game.width / gameOptions.blocksPerLine
                 }, 200, Phaser.Easing.Linear.None, true);
 
-                // once the tween is completed...
+                // move os blocos na logica
                 scrollTween.onComplete.add(function () {
-                    // moved
                     this.shooting = false;
-                    // put the group in its original position
                     this.blockGroup.y = 0;
-                    // loop through all blockGroup children
                     this.blockGroup.forEach(function (block) {
                         block.y += game.width / gameOptions.blocksPerLine;
                         block.row++;
@@ -191,7 +171,7 @@ playGame.prototype = {
                             game.state.start("PlayGame");
                         }
                     }, this);
-                    // add a new line
+                    // adciona nova linha
                     this.placeLine();
                 }, this);
             }, null, this);

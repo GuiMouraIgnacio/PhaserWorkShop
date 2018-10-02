@@ -1,6 +1,7 @@
 var game;
 
 var gameOptions = {
+    //variaveis de configuracao
     scorePanelHeight: 0.08,
     launchPanelHeight: 0.18,
     ballSize: 0.04,
@@ -16,54 +17,52 @@ var playGame = function(){}
 playGame.prototype = {
 
 	preload: function(){
- 
-        // load graphic assets
+        // Carrega Assets do jogo
         game.load.image("ball", "assets/ball.png");
         game.load.image("panel", "assets/panel.png");
         game.load.image("trajectory", "assets/trajectory.png");
 	},
  
     create: function(){
- 
-        // scale and background settings
+        // background e fullscreen
         game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL;
         game.scale.pageAlignHorizontally = true;
         game.scale.pageAlignVertically = true;
         game.stage.backgroundColor = 0x202020;
  
-        // start ARCADE physics system
+        // Inicia física
         game.physics.startSystem(Phaser.Physics.ARCADE);
  
-        // place score panel
+        // coloca o painel superior
         this.scorePanel = game.add.image(0, 0, "panel");
         this.scorePanel.width = game.width;
         this.scorePanel.height = Math.round(game.height * gameOptions.scorePanelHeight);
  
-        // place launch panel
+        // coloca o painel inferior
         this.launchPanel = game.add.sprite(0, game.height, "panel");
         this.launchPanel.width = game.width;
         this.launchPanel.height = Math.round(game.height * gameOptions.launchPanelHeight);
         this.launchPanel.anchor.set(0, 1);
-        // enable ARCADE physics on launch panel
+        // habilita fisica no painel
         game.physics.enable(this.launchPanel, Phaser.Physics.ARCADE);
-        // launch panel will not move
+        // deixa ele imovel
         this.launchPanel.body.immovable = true;
  
-        // place the ball
+        // coloca a bola na posicao inicial
         var ballSize = game.width * gameOptions.ballSize;
         this.ball = game.add.sprite(game.width / 2, game.height - this.launchPanel.height - ballSize / 2, "ball");
         this.ball.width = ballSize;
         this.ball.height = ballSize;
         this.ball.anchor.set(0.5);
  
-        // enable ARCADE physics on the ball
+        // habilita fisica na bola
         game.physics.enable(this.ball, Phaser.Physics.ARCADE);
  
-        // the ball will collide on bounds
+        // coloca a bola pra rebater
         this.ball.body.collideWorldBounds=true;
         this.ball.body.bounce.set(1);
  
-        // place the trajectory
+        // carrega o sprite da mira
         this.trajectory = game.add.sprite(this.ball.x, this.ball.y, "trajectory");
         this.trajectory.anchor.set(0.5, 1);
         this.trajectory.visible = false;

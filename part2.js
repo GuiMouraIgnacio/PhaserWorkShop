@@ -48,94 +48,65 @@ playGame.prototype = {
         this.trajectory.anchor.set(0.5, 1);
         this.trajectory.visible = false;
  
-        // wait for player input
+        // configurando input do jogador
         game.input.onDown.add(this.aimBall, this);
         game.input.onUp.add(this.shootBall, this);
         game.input.addMoveCallback(this.adjustBall, this);
  
-        // the player is not aiming
+        // setta a mira e o tiro pra falso
         this.aiming = false;
- 
-        // the player is not shooting
         this.shooting = false;
 	},
  
     aimBall: function(e){
- 
-        // if the player is not shooting...
+        // setta a mira
         if(!this.shooting){
- 
-            // the player is aiming
             this.aiming = true;
         }
     },
  
     adjustBall: function(e){
- 
-        // if the player is aiming...
         if(this.aiming){
- 
-            // check distance between initial and current input  position
-            var distX = e.position.x - e.positionDown.x;
+            // pega o quanto o jogador arrastou pra baixo na tela
             var distY = e.position.y - e.positionDown.y;
- 
-            // a vertical distance of at least 10 pixels is required
             if(distY > 10){
  
-                // place the trajectory over the ball
+                // coloca a mira na bola
                 this.trajectory.position.set(this.ball.x, this.ball.y);
- 
-                // show trajectory
                 this.trajectory.visible = true;
- 
-                // calculate direction
+                //calcula e aplica o angulo
                 this.direction = Phaser.Math.angleBetween(e.position.x, e.position.y, e.positionDown.x, e.positionDown.y);
- 
-                // adjust trajectory angle according to direction, in degrees
                 this.trajectory.angle = Phaser.Math.radToDeg(this.direction) + 90;
             }
             else{
- 
-                // hide trajectory
+                // esconde a mira
                 this.trajectory.visible = false;
             }
         }
     },
  
     shootBall: function(){
- 
-        // if the trajectory is visible...
+        // se estiver mirando
         if(this.trajectory.visible){
  
-            // get angle of fire in radians
+            // calcula o angulo e atira
             var angleOfFire = Phaser.Math.degToRad(this.trajectory.angle - 90);
- 
-            // set ball velocity
             this.ball.body.velocity.set(gameOptions.ballSpeed * Math.cos(angleOfFire), gameOptions.ballSpeed * Math.sin(angleOfFire));
- 
-            // the player is shooting!
             this.shooting = true;
         }
  
-        // do not aim anymore
+        // para a mira
         this.aiming = false;
- 
-        // do not show the trajectory anymore
         this.trajectory.visible = false;
     },
  
     update: function(){
- 
-        // if the player is shooting...
         if(this.shooting){
- 
-            // check for collision between the ball and the launch panel
+            // espera colisoes entre a bola e o painel inferior
             game.physics.arcade.collide(this.ball, this.launchPanel, function(){
  
-                // stop the ball
+                // para a bola
                 this.ball.body.velocity.set(0);
- 
-                // the player is not shooting
                 this.shooting = false;
             }, null, this);
         }

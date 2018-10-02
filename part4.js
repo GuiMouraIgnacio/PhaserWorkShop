@@ -65,7 +65,7 @@ playGame.prototype = {
         this.aiming = false;
         this.shooting = false;
 
-        //acompanha qual o level
+        // zera o level
         this.level = 0;
         this.placeLine();
     },
